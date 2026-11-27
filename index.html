@@ -91,14 +91,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .hero .btn { margin-top: 18px; }
 
 /* Deal */
-.deal { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-.deal li { padding: 28px 26px; border-radius: 16px; background: var(--surface); box-shadow: var(--card-shadow); display: grid; gap: 10px; align-content: start; min-width: 0; }
-.deal .big { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(2.3rem, 4.6vw, 3rem); line-height: 1; color: var(--ink); }
-.deal .big small { font-size: .42em; color: var(--muted); font-weight: 600; }
-.deal p { color: var(--muted); font-size: 1rem; }
-.deal p b { color: var(--ink); font-weight: 800; }
-.deal li.final { background: linear-gradient(170deg, #fff 0%, var(--blue-soft) 100%); box-shadow: 0 0 0 1.5px var(--blue), 0 16px 36px -24px rgba(10,107,208,.4); }
-.deal li.final .big { color: var(--blue); }
 
 /* Waitlist */
 .form-head { display: grid; gap: 14px; justify-items: center; text-align: center; margin-bottom: 36px; }
@@ -222,14 +214,42 @@ h1 .w { display: inline-block; animation: rise .8s cubic-bezier(.2,.8,.2,1) both
 .rv { opacity: 0; translate: 0 30px; transition: opacity .9s cubic-bezier(.2,.8,.2,1), translate .9s cubic-bezier(.2,.8,.2,1); transition-delay: var(--d, 0s); }
 .rv.in { opacity: 1; translate: 0 0; }
 
-/* Deal cards: tilt + glare */
-.deal li { position: relative; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .3s, opacity .9s cubic-bezier(.2,.8,.2,1), translate .9s cubic-bezier(.2,.8,.2,1); transition-delay: 0s, 0s, var(--d, 0s), var(--d, 0s); }
-.deal li::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: radial-gradient(300px circle at var(--gx, 50%) var(--gy, 0%), rgba(26,140,240,.12), transparent 60%); opacity: 0; transition: opacity .3s; }
-.deal li:hover::before { opacity: 1; }
-.deal li:hover { box-shadow: 0 0 0 1px rgba(26,140,240,.45), 0 28px 50px -28px rgba(10,107,208,.45); }
-.deal li.final:hover { box-shadow: 0 0 0 1.5px var(--blue), 0 30px 56px -26px rgba(10,107,208,.6); }
-.step { font-family: var(--display); font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
-.final .step { color: var(--blue); }
+/* Journey: vertical step-by-step timeline. A rail joins the step nodes and fills with blue as you scroll. */
+.j-head { display: grid; justify-items: center; text-align: center; gap: 12px; margin-bottom: clamp(36px, 5vw, 56px); }
+.j-head .lead { font-size: 1.05rem; }
+.journey { position: relative; list-style: none; margin: 0 auto; padding: 0; max-width: 820px; display: grid; gap: 22px; --node: 60px; }
+.rail { position: absolute; left: calc(var(--node) / 2 - 2px); width: 4px; border-radius: 4px; background: repeating-linear-gradient(180deg, #c9daee 0 8px, transparent 8px 14px); }
+.rail i { position: absolute; inset: 0; border-radius: inherit; transform-origin: 50% 0; transform: scaleY(0); background: linear-gradient(180deg, var(--blue), #6cc0ff 60%, var(--blue-deep)); box-shadow: 0 0 14px rgba(26,140,240,.45); }
+.jstep { position: relative; display: grid; grid-template-columns: var(--node) 1fr; gap: clamp(16px, 3vw, 28px); align-items: center; }
+.node { position: relative; z-index: 1; width: var(--node); height: var(--node); border-radius: 50%; display: grid; place-items: center; background: var(--surface); color: var(--muted); font-family: var(--display); font-weight: 800; font-size: 1.35rem; box-shadow: 0 0 0 2px #c9daee, 0 10px 20px -12px rgba(13,27,51,.35); transition: background .5s, color .5s, box-shadow .5s, transform .5s cubic-bezier(.3,1.6,.5,1); }
+.node svg { width: 46%; height: 46%; }
+.jstep.on .node { background: linear-gradient(180deg, #2b97f3, var(--blue-deep)); color: #fff; box-shadow: 0 0 0 6px var(--blue-soft), 0 0 0 7px rgba(26,140,240,.35), 0 14px 26px -10px rgba(10,107,208,.65); transform: scale(1.06); }
+.jcard { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr auto; gap: clamp(16px, 3vw, 32px); align-items: center; padding: clamp(22px, 3vw, 30px); border-radius: 18px; background: var(--surface); box-shadow: var(--card-shadow); transition: box-shadow .3s, transform .3s cubic-bezier(.2,.8,.2,1); }
+.jcard > * { min-width: 0; }
+.jcard::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(340px circle at var(--gx, 80%) var(--gy, 0%), rgba(26,140,240,.10), transparent 60%); opacity: 0; transition: opacity .3s; }
+.jcard:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px rgba(26,140,240,.45), 0 28px 50px -28px rgba(10,107,208,.45); }
+.jcard:hover::before { opacity: 1; }
+.jtext { display: grid; gap: 8px; }
+.jmeta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.step { font-family: var(--display); font-size: .7rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--blue); }
+.when { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 99px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); font-size: .76rem; font-weight: 600; color: var(--muted); }
+.when svg { width: 13px; height: 13px; }
+.jcard h3 { font-size: clamp(1.2rem, 2.2vw, 1.4rem); }
+.jcard p { color: var(--muted); font-size: 1rem; }
+.jcard p b { color: var(--ink); font-weight: 800; }
+.stat { display: grid; justify-items: center; align-content: center; text-align: center; gap: 4px; width: 176px; padding: 18px 16px; border-radius: 14px; background: var(--blue-soft); }
+.stat .big { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(2.2rem, 4.4vw, 2.9rem); line-height: 1; color: var(--blue-deep); }
+.stat .big small { font-size: .42em; color: var(--muted); font-weight: 600; letter-spacing: 0; }
+.stat .cap { font-size: .74rem; font-weight: 600; line-height: 1.3; color: var(--muted); max-width: 16ch; }
+.jstep.final .jcard { background: linear-gradient(160deg, #fff 0%, var(--blue-soft) 120%); box-shadow: 0 0 0 1.5px var(--blue), 0 24px 48px -28px rgba(10,107,208,.55); }
+.jstep.final .stat { background: linear-gradient(180deg, #2b97f3, var(--blue-deep)); box-shadow: 0 14px 28px -14px rgba(10,107,208,.7); }
+.jstep.final .stat .big, .jstep.final .stat .cap { color: #fff; }
+.jstep.final .stat .cap { opacity: .85; }
+.ribbon { position: absolute; top: 14px; right: -34px; rotate: 35deg; padding: 4px 40px; background: var(--ink); color: #fff; font-size: .62rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.jstep.final .jtext { padding-right: 18px; }
+.j-foot { display: grid; justify-items: center; text-align: center; gap: 6px; margin-top: clamp(28px, 4vw, 40px); color: var(--muted); font-size: .95rem; }
+.j-foot b { color: var(--ink); }
+[data-count] { font-variant-numeric: tabular-nums; }
 [data-count] { font-variant-numeric: tabular-nums; }
 
 /* Form progress meter + per-field checks */
@@ -270,7 +290,12 @@ h1 .w { display: inline-block; animation: rise .8s cubic-bezier(.2,.8,.2,1) both
   .dock { display: flex; position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 60; translate: 0 140%; transition: translate .45s cubic-bezier(.2,.8,.2,1); box-shadow: 0 20px 40px -16px rgba(10,107,208,.7); }
   .dock.show { translate: 0 0; }
   .byline .stats { justify-content: center; }
-  .deal { grid-template-columns: 1fr; }
+  .journey { --node: 44px; gap: 18px; }
+  .node { font-size: 1.05rem; }
+  .jcard { grid-template-columns: 1fr; }
+  .stat { justify-items: start; text-align: left; grid-template-columns: auto 1fr; align-items: center; column-gap: 14px; width: auto; padding: 14px 16px; }
+  .stat .cap { max-width: none; }
+  .ribbon { display: none; }
   .row2 { grid-template-columns: 1fr; }
   .byline { grid-template-columns: 1fr; justify-items: center; text-align: center; }
   .byline img { width: 150px; height: 150px; }
@@ -318,14 +343,51 @@ h1 .w { display: inline-block; animation: rise .8s cubic-bezier(.2,.8,.2,1) both
     </div>
   </section>
 
-  <!-- The deal -->
-  <section>
+  <!-- How it works: step-by-step journey -->
+  <section id="how">
     <div class="wrap">
-      <ul class="deal">
-        <li><span class="step">Step 1</span><span class="big">$<span data-count="79">79</span><small>/mo</small></span><h3>Less than your monthly coffee budget</h3><p>No massive upfront fee, simply enough for me to know you're actually serious about this, and not a dollar more. You <b>only</b> pay more when you win.</p></li>
-        <li><span class="step">Step 2</span><span class="big"><span data-split data-count="30">30</span>%</span><h3>Only pay when you sell</h3><p>Split your commission with your mentors once you start making sales. No sales, no split.</p></li>
-        <li class="final"><span class="step">Step 3</span><span class="big"><span data-count="100">100</span>%</span><h3>Hit $10K profit, keep it all</h3><p>Once you've made your first $10K in profit, you graduate. The split ends for good.</p></li>
-      </ul>
+      <div class="j-head">
+        <p class="eyebrow">How it works</p>
+        <h2>Your path to <span class="hl">$10K profit</span></h2>
+        <p class="lead">Three steps. You only pay more when you're making money.</p>
+      </div>
+      <ol class="journey" id="journey">
+        <li class="rail" id="rail" aria-hidden="true"><i id="rail-fill"></i></li>
+        <li class="jstep">
+          <span class="node" aria-hidden="true">1</span>
+          <div class="jcard">
+            <div class="jtext">
+              <div class="jmeta"><span class="step">Step 1 · Join</span><span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>When you join</span></div>
+              <h3>Less than your monthly coffee budget</h3>
+              <p>No massive upfront fee, simply enough for me to know you're actually serious about this, and not a dollar more. You <b>only</b> pay more when you win.</p>
+            </div>
+            <div class="stat"><span class="big">$<span data-count="79">79</span><small>/mo</small></span><span class="cap">flat membership</span></div>
+          </div>
+        </li>
+        <li class="jstep">
+          <span class="node" aria-hidden="true">2</span>
+          <div class="jcard">
+            <div class="jtext">
+              <div class="jmeta"><span class="step">Step 2 · Sell</span><span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>When sales come in</span></div>
+              <h3>Only pay when you sell</h3>
+              <p>Split your commission with your mentors once you start making sales. No sales, no split.</p>
+            </div>
+            <div class="stat"><span class="big"><span data-split data-count="30">30</span>%</span><span class="cap">commission split, only on sales</span></div>
+          </div>
+        </li>
+        <li class="jstep final">
+          <span class="node" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span>
+          <div class="jcard">
+            <span class="ribbon" aria-hidden="true">Graduate</span>
+            <div class="jtext">
+              <div class="jmeta"><span class="step">Step 3 · Graduate</span><span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>At $10K profit</span></div>
+              <h3>Hit $10K profit, keep it all</h3>
+              <p>Once you've made your first $10K in profit, you graduate. The split ends for good.</p>
+            </div>
+            <div class="stat"><span class="big"><span data-count="100">100</span>%</span><span class="cap">of your earnings, yours forever</span></div>
+          </div>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -564,7 +626,7 @@ const CONFIG = {
   };
 
   /* Scroll reveal (staggered within groups) */
-  const groups = [[".deal li"], [".form-head", "#wl-form"], [".byline"], [".brands"], [".strip-head", ".strip", ".dots", ".strip-nav"]];
+  const groups = [[".j-head", ".jstep"], [".form-head", "#wl-form"], [".byline"], [".brands"], [".strip-head", ".strip", ".dots", ".strip-nav"]];
   if (!calm && "IntersectionObserver" in window) {
     document.querySelectorAll("[data-count]").forEach(el => el.textContent = "0");
     const io = new IntersectionObserver(entries => entries.forEach(en => {
@@ -595,17 +657,12 @@ const CONFIG = {
       vsl.style.setProperty("--vy", (e.clientY - r.top) + "px");
     });
 
-    /* Deal cards: 3D tilt + glare */
-    document.querySelectorAll(".deal li").forEach(card => {
-      card.addEventListener("pointermove", e => {
-        const r = card.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
-        card.style.setProperty("--ry", ((x - .5) * 10) + "deg");
-        card.style.setProperty("--rx", ((.5 - y) * 8) + "deg");
-        card.style.setProperty("--gx", (x * 100) + "%");
-        card.style.setProperty("--gy", (y * 100) + "%");
-      });
-      card.addEventListener("pointerleave", () => { card.style.setProperty("--rx", "0deg"); card.style.setProperty("--ry", "0deg"); });
-    });
+    /* Journey cards: glare follows the cursor */
+    document.querySelectorAll(".jcard").forEach(card => card.addEventListener("pointermove", e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--gx", (e.clientX - r.left) + "px");
+      card.style.setProperty("--gy", (e.clientY - r.top) + "px");
+    }));
 
     /* Magnetic buttons */
     document.querySelectorAll(".btn:not(.dock)").forEach(b => {
@@ -616,6 +673,21 @@ const CONFIG = {
       b.addEventListener("pointerleave", () => b.style.translate = "");
     });
   }
+
+  /* Journey rail: spans node to node and fills as you scroll; nodes light up as the fill reaches them */
+  const journey = $("journey"), rail = $("rail"), railFill = $("rail-fill"), jsteps = [...journey.querySelectorAll(".jstep")];
+  const centers = () => jsteps.map(li => { const n = li.querySelector(".node"); return li.offsetTop + n.offsetTop + n.offsetHeight / 2; });
+  const layoutRail = () => { const c = centers(); rail.style.top = c[0] + "px"; rail.style.height = (c[c.length - 1] - c[0]) + "px"; };
+  const fillRail = () => {
+    const c = centers(), r = journey.getBoundingClientRect();
+    const reach = calm ? Infinity : innerHeight * .62 - r.top;
+    const p = Math.max(0, Math.min(1, (reach - c[0]) / (c[c.length - 1] - c[0])));
+    railFill.style.transform = `scaleY(${p})`;
+    jsteps.forEach((li, i) => li.classList.toggle("on", reach >= c[i] - 2));
+  };
+  layoutRail(); fillRail();
+  addEventListener("resize", () => { layoutRail(); fillRail(); });
+  addEventListener("scroll", fillRail, { passive: true });
 
   /* Wins strip: position dots */
   const figs = [...strip.querySelectorAll("figure")], dots = $("dots");
